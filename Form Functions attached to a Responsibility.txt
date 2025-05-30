@@ -1,0 +1,69 @@
+
+select * from fnd_form_functions where web_html_call like '%oracle/apps/per/selfservice/successionmgmt/porta%'
+
+
+
+select * from (SELECT frtl.responsibility_name, 
+       fr.responsibility_key, 
+       fm.menu_id, 
+       fm.menu_name, 
+       menu.function_id, 
+       menu.prompt, 
+       fffv.user_function_name, 
+       fffv.function_name, 
+       fffv.TYPE 
+  FROM (SELECT connect_by_root fmet.menu_id top_menu_id, 
+               fmet.menu_id                 menu_id, 
+               fmet.sub_menu_id, 
+               fmet.function_id, 
+               fmet.prompt 
+          FROM fnd_menu_entries_vl fmet 
+        CONNECT BY PRIOR fmet.sub_menu_id = fmet.menu_id 
+                         AND PRIOR fmet.prompt IS NOT NULL) menu, 
+       fnd_responsibility fr, 
+       fnd_responsibility_tl frtl, 
+       fnd_menus fm, 
+       fnd_form_functions_vl fffv 
+ WHERE fr.menu_id = menu.top_menu_id 
+   AND fffv.function_id = menu.function_id 
+   AND fffv.TYPE <> 'SUBFUNCTION' 
+   AND menu.function_id IS NOT NULL 
+   AND menu.prompt IS NOT NULL 
+   AND fm.menu_id = menu.menu_id 
+   AND frtl.responsibility_id = fr.responsibility_id 
+ --  AND frtl.responsibility_name LIKE 'System Administrator' 
+   AND menu.function_id NOT IN (SELECT ffvl.function_id 
+                                  FROM apps.fnd_resp_functions frf, 
+                                       applsys.fnd_responsibility_tl frt, 
+                                       apps.fnd_form_functions_vl ffvl 
+                                 WHERE 
+       frf.responsibility_id = frt.responsibility_id 
+                                   AND frf.action_id = ffvl.function_id 
+                                   AND frf.rule_type = 'F' 
+                                   AND 
+           frt.responsibility_name = frtl.responsibility_name) 
+   AND menu.menu_id NOT IN (SELECT fmv.menu_id 
+                              FROM apps.fnd_resp_functions frf, 
+                                   applsys.fnd_responsibility_tl frt, 
+                                   apps.fnd_menus_vl fmv 
+                             WHERE 
+       frf.responsibility_id = frt.responsibility_id 
+                               AND frf.action_id = fmv.menu_id 
+                               AND frf.rule_type = 'M' 
+                               AND 
+       frt.responsibility_name = frtl.responsibility_name) )sqlre where  function_name='PER_SP_PLAN_PORTAL'
+       
+
+
+
+
+
+
+select fu.user_id,
+       fu.user_name,
+       furg.RESPONSIBILITY_APPLICATION_ID,
+       frv.RESPONSIBILITY_NAME
+  from FND_USER fu, FND_USER_RESP_GROUPS furg, FND_RESPONSIBILITY_VL frv
+ where fu.user_id = furg.user_id
+   and furg.responsibility_id = frv.responsibility_id
+   and fu.user_name like 'DAVIDEVANS'

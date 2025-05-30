@@ -1,0 +1,57 @@
+#!/bin/bash 
+LOG_FILE=/home/vsurapan/found.txt 
+LOG_FILE1=/home/vsurapan/notfound.txt 
+for file in /home/vsurapan/Filesrdftorex/*.rex
+do 
+grep -i "email" $file >> found.txt 
+#grep -i $file -e "email" >> found.txt"
+if [ $? -eq 0 ] 
+then 
+echo "File Name:"|| found.txt >> $LOG_FILE 
+else
+echo "File Name:"|| notfound.txt >> $LOG_FILE1 
+fi
+done
+  --converting file into .txt file
+echo Current Path ----  $pwd
+for i in `ls $AU_TOP/forms/US/*NHR*.fmb | grep -v .fmx`
+do
+echo Compiling Form $i ....
+ frmcmp_batch module=$i userid=apps/Simple4u batch=NO Module_Type=FORM forms_doc=YES Output_File=$XXNHR_TOP/bin/${i%}_chk.txt
+echo $ ....
+done
+
+
+--converting fmb file into txt file
+echo Current Path ----  $pwd
+for i in `ls $AU_TOP/forms/US/*NHR*.fmb | grep -v .fmx`
+do
+i=${i%.*}.txt
+echo Compiling Form $i ....
+frmcmp_batch module=$i userid=apps/Simple4u batch=NO Module_Type=FORM forms_doc=YES Output_File=$XXNHR_TOP/bin/$i
+echo $ ....
+done
+
+---- in the files search the specific word what are the words are there it will include into one file.
+
+
+for j in `ls  -ltr *NHR*.txt | grep -v '_[0-9].'`
+do
+echo ********************************
+echo searching file $j
+echo ********************************
+# Search for ORG_ID 83,87,88,89,90,142
+  grep -inw '83\|90\|87\|88\|89\|142' $j >> test_output.txt
+echo #############################################################################
+# Search for OU Name
+  grep -in 'Santa\|Amster\|Singa\|Japa\|UK' $j >> test_output.txt 
+echo #############################################################################
+# Search for ORGANIZATION_ID 84,85,86,92,93,242, 202,222,223
+grep -inw '84\|85\|86\|92\|242\|202\|222\|223' $j >> test_output.txt
+echo #############################################################################
+# Search for ORG_CODE SBA, AMS, SNG, SVC, NYC
+grep -in 'SBA\|AMS\|SNG\|SVC\|NYC' $j >> test_output.txt
+
+echo end of searching for $j
+echo ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+done

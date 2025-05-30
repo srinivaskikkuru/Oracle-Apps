@@ -1,0 +1,120 @@
+select fcr.request_id,fcp.CONCURRENT_PROGRAM_ID
+        ,fcp.CONCURRENT_PROGRAM_NAME 
+        ,fcpt.USER_CONCURRENT_PROGRAM_NAME
+        ,fcr.argument_text
+        ,frt.RESPONSIBILITY_NAME
+        ,fcr.responsibility_id
+        ,fcr.requested_start_date
+        ,fcr.ACTUAL_START_DATE
+        ,fcr.ACTUAL_COMPLETION_DATE
+        , fcr.status_code
+        ,(select user_name from fnd_user where user_id =fcr.requested_by) requestor
+from
+ fnd_concurrent_programs fcp,
+ fnd_concurrent_programs_tl fcpt,
+ FND_CONCURRENT_REQUESTS fcr,
+ fnd_responsibility_tl frt
+  where
+ fcp.CONCURRENT_PROGRAM_ID= fcpt.CONCURRENT_PROGRAM_ID
+ and  fcp.CONCURRENT_PROGRAM_ID=fcr.CONCURRENT_PROGRAM_ID
+ and fcr.responsibility_id=frt.responsibility_id
+ --and upper(fcpt.user_CONCURRENT_PROGRAM_NAME) like upper('Sales Order Pick List (CI)')
+  and fcr.request_id=82719436
+  order by fcr.request_id desc;
+ ****************************************************************************************************************
+ 
+select   REQUEST_ID,USER_CONCURRENT_PROGRAM_NAME,program,argument_text,
+            PHASE_CODE,
+            STATUS_CODE,
+            RESPONSIBILITY_ID,ACTUAL_COMPLETION_DATE,ACTUAL_START_DATE,
+            trunc(months_between(ACTUAL_COMPLETION_DATE,ACTUAL_START_DATE)/12) as yrs ,
+            trunc(mod( months_between(ACTUAL_COMPLETION_DATE,ACTUAL_START_DATE) ,12)) as mnts,
+            trunc(ACTUAL_COMPLETION_DATE - add_months( ACTUAL_START_DATE, months_between(ACTUAL_COMPLETION_DATE,ACTUAL_START_DATE))) as dys,
+            trunc(24*mod(ACTUAL_COMPLETION_DATE - ACTUAL_START_DATE,1)) as hrs,
+            trunc( mod(mod(ACTUAL_COMPLETION_DATE - ACTUAL_START_DATE,1)*24,1)*60 ) as mins ,
+            mod(mod(mod(ACTUAL_COMPLETION_DATE - ACTUAL_START_DATE,1)*24,1)*60,1)*60 as secs,requestor,a.*
+from FND_CONC_REQ_SUMMARY_V a
+WHERE program LIKE  '%Capacity Planning by Project%CI%'
+--and argument_text like '1290%'
+ORDER BY a.REQUEST_ID DESC  
+
+****************************************************************************************************************** 
+  FND Concurrent program details:
+
+SELECT fcpt.user_concurrent_program_name ,
+  fcp.concurrent_program_name short_name ,
+  fat.application_name program_application_name ,
+  fet.executable_name ,
+  fat1.application_name executable_application_name ,
+  flv.meaning execution_method ,
+  fet.execution_file_name ,
+  fcp.enable_trace
+FROM fnd_concurrent_programs_tl fcpt ,
+  fnd_concurrent_programs fcp ,
+  fnd_application_tl fat ,
+  fnd_executables fet ,
+  fnd_application_tl fat1 ,
+  FND_LOOKUP_VALUES FLV
+WHERE 1                              =1
+AND fcpt.user_concurrent_program_name='Project Mgt Weekly Status Report - Manufacturing (CI)'
+AND fcpt.concurrent_program_id       = fcp.concurrent_program_id
+AND fcpt.application_id              = fcp.application_id
+AND fcp.application_id               = fat.application_id
+AND fcpt.application_id              = fat.application_id
+AND fcp.executable_id                = fet.executable_id
+AND fcp.executable_application_id    = fet.application_id
+AND fet.application_id               = fat1.application_id
+AND flv.lookup_code                  = fet.execution_method_code
+AND FLV.LOOKUP_TYPE                  ='CP_EXECUTION_METHOD_CODE'
+
+
+Parameters List :
+select fcpl.user_concurrent_program_name
+     , fcp.concurrent_program_name
+     , fcp.concurrent_program_id
+     , fav.application_short_name
+     , fav.application_name
+     , fav.application_id
+     , fdfcuv.end_user_column_name
+     , fdfcuv.form_left_prompt prompt
+     , fdfcuv.enabled_flag
+     , fdfcuv.required_flag
+     , fdfcuv.display_flag
+from   fnd_concurrent_programs fcp
+     , fnd_concurrent_programs_tl fcpl
+     , fnd_descr_flex_col_usage_vl fdfcuv
+     , fnd_application_vl fav
+where  fcp.concurrent_program_id = fcpl.concurrent_program_id
+and    fcpl.user_concurrent_program_name = :conc_prg_name
+and    fav.application_id=fcp.application_id
+and    fcpl.language = 'US'
+and    fdfcuv.descriptive_flexfield_name = '$SRS$.' || fcp.concurrent_program_name;
+
+
+
+2.to find from which responsibility a concurrent program can be run
+
+select distinct
+  a.user_concurrent_program_name,
+  a.description,
+  request_group_name,
+  e.responsibility_name
+from
+  fnd_concurrent_programs_tl a,
+  fnd_request_groups b,
+  fnd_request_group_units c,
+  fnd_responsibility d,
+  fnd_responsibility_tl e
+where
+  a.concurrent_program_id = c.request_unit_id   
+and b.request_group_id = c.request_group_id
+and b.request_group_id = d.request_group_id
+and d.responsibility_id = e.responsibility_id
+and a.application_id = b.application_id
+and b.application_id = c.application_id
+and d.application_id = e.application_id
+and a.USER_CONCURRENT_PROGRAM_NAME = :p_USER_CONCURRENT_PROGRAM_NAME
+
+
+/*******Concurrent Report Output file name***************/
+FND_CONC_REQ_OUTPUTS

@@ -1,0 +1,153 @@
+Here there are few key FND tables that we use in our AOL queries.
+
+FND_APPLICATION:
+
+ Stores applications registered with Oracle Application Object Library.
+
+FND_APPLICATION_TL:
+
+Stores translated information about all the applications registered with Oracle Application Object Library.
+
+FND_APP_SERVERS:
+
+This table will track the servers used by the E-Business Suite system.
+
+FND_ATTACHED_DOCUMENTS:
+
+Stores information relating a document to an application entity.
+
+FND_CONCURRENT_PROCESSES:
+
+Stores information about concurrent managers.
+
+FND_CONCURRENT_PROCESSORS:
+
+Stores information about immediate (subroutine) concurrent program libraries.
+
+FND_CONCURRENT_PROGRAMS:
+
+Stores information about concurrent programs. Each row includes a name and description of the concurrent program.
+
+FND_CONCURRENT_PROGRAMS_TL:
+
+Stores translated information about concurrent programs in each of the installed languages.
+
+FND_CONCURRENT_QUEUES:
+
+Stores information about concurrent managers.
+
+FND_CONCURRENT_QUEUE_SIZE:
+
+Stores information about the number of requests a concurrent manager can process at once, according to its work shift.
+
+FND_CONCURRENT_REQUESTS:
+
+Stores information about individual concurrent requests.
+
+FND_CONCURRENT_REQUEST_CLASS:
+
+Stores information about concurrent request types.
+
+FND_CONC_REQ_OUTPUTS:
+
+This table stores output files created by Concurrent Request.
+
+FND_CURRENCIES:
+
+Stores information about currencies.
+
+FND_DATABASES:
+
+It tracks the databases employed by the eBusiness suite. This table stores information about the database that is not instance specific.
+
+FND_DATABASE_INSTANCES:
+
+Stores instance specific information. Every database has one or more instance.
+
+FND_DESCRIPTIVE_FLEXS:
+
+Stores setup information about descriptive flexfields.
+
+FND_DESCRIPTIVE_FLEXS_TL:
+
+Stores translated setup information about descriptive flexfields.
+
+FND_DOCUMENTS:
+
+Stores language-independent information about a document.
+
+FND_EXECUTABLES:
+
+Stores information about concurrent program executables.
+
+FND_FLEX_VALUES:
+
+Stores valid values for key and descriptive flexfield segments.
+
+FND_FLEX_VALUE_SETS:
+
+Stores information about the value sets used by both key and descriptive flexfields.
+
+FND_LANGUAGES:
+
+Stores information regarding languages and dialects.
+
+FND_MENUS:
+
+It lists the menus that appear in the Navigate Window, as determined by the System Administrator when defining responsibilities for function security.
+
+FND_MENUS_TL:
+
+Stores translated information about the menus in FND_MENUS.
+
+FND_MENU_ENTRIES:
+
+Stores information about individual entries in the menus in FND_MENUS.
+
+FND_PROFILE_OPTIONS:
+
+Stores information about user profile options.
+
+FND_REQUEST_GROUPS:
+
+Stores information about report security groups.
+
+FND_REQUEST_SETS:
+
+Stores information about report sets.
+
+FND_RESPONSIBILITY:
+
+Stores information about responsibilities. Each row includes the name and description of the responsibility, the application it belongs to, and values that identify the main menu, and the first form that it uses.
+
+FND_RESPONSIBILITY_TL:
+
+Stores translated information about responsibilities.
+
+FND_RESP_FUNCTIONS:
+
+Stores security exclusion rules for function security menus. Security exclusion rules are lists of functions and menus inaccessible to a particular responsibility.
+
+FND_SECURITY_GROUPS:
+
+Stores information about security groups used to partition data in a Service Bureau architecture.
+
+FND_SEQUENCES:
+
+Stores information about the registered sequences in your applications.
+
+FND_TABLES:
+
+Stores information about the registered tables in your applications.
+
+FND_TERRITORIES:
+
+Stores information for countries, alternatively known as territories.
+
+FND_USER:
+
+Stores information about application users.
+
+FND_VIEWS:
+
+Stores information about the registered views in your applications.

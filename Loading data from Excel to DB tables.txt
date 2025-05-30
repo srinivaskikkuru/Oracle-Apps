@@ -1,0 +1,87 @@
+DECLARE 
+application OLE2.OBJ_TYPE; 
+workbooks OLE2.OBJ_TYPE; 
+workbook OLE2.OBJ_TYPE; 
+worksheets OLE2.OBJ_TYPE; 
+worksheet OLE2.OBJ_TYPE; 
+cell OLE2.OBJ_TYPE; 
+args OLE2.OBJ_TYPE; 
+ctr NUMBER(12); 
+cols NUMBER(2);
+name_var1 VARCHAR2(2000); 
+name_var2 VARCHAR2(2000); 
+name_var3 VARCHAR2(2000); 
+name_var4 VARCHAR2(2000); 
+filename varchar2(100);
+
+PROCEDURE OLEARG IS
+args OLE2.OBJ_TYPE; 
+BEGIN
+args := OLE2.CREATE_ARGLIST; 
+ole2.add_arg(args,ctr); -- row value
+ole2.add_arg(args,cols); -- column value
+cell := ole2.GET_OBJ_PROPERTY(worksheet,'Cells',args); -- initializing cell
+ole2.destroy_arglist(args); 
+END;
+
+BEGIN
+filename :=GET_FILE_NAME('c:\', File_Filter=>'Excel Files (*.xls)|*.xls|'); -- to pick the file
+application := OLE2.CREATE_OBJ('Excel.Application'); 
+ole2.set_property(application,'Visible','true'); 
+workbooks := OLE2.GET_OBJ_PROPERTY(application, 'Workbooks'); 
+args := OLE2.CREATE_ARGLIST; 
+ole2.add_arg(args,filename); --'c:\13s002.xls'); -- file path and name
+workbook := ole2.GET_OBJ_PROPERTY(workbooks,'Open',args); 
+ole2.destroy_arglist(args); 
+args := OLE2.CREATE_ARGLIST; 
+ole2.add_arg(args,'Sheet1'); 
+worksheet := ole2.GET_OBJ_PROPERTY(workbook,'Worksheets',args); 
+ole2.destroy_arglist(args); 
+
+ctr := 2; --row number
+cols := 1; -- column number
+
+FIRST_RECORD; 
+
+LOOP 
+OLEARG;
+name_var1 := ole2.get_char_property(cell,'Value'); --cell value of the argument
+cols := cols+1;
+
+OLEARG;
+name_var2 := ole2.get_char_property(cell,'Value'); --cell value of the argument
+cols := cols+1;
+
+OLEARG;
+name_var3 := ole2.get_char_property(cell,'Value'); --cell value of the argument
+cols := cols+1;
+
+OLEARG;
+name_var4 := ole2.get_num_property(cell,'Value'); --cell number value of the argument
+
+IF ctr = 1 then 
+:tf1 := name_var1; 
+:tf2 := name_var2; 
+:tf3 := name_var3; 
+:tf4 := name_var4; 
+ELSE 
+NEXT_RECORD; 
+:tf1 := name_var1; 
+:tf2 := name_var2; 
+:tf3 := name_var3; 
+:tf4 := name_var4;
+END IF; 
+
+EXIT WHEN length(name_var1) = 0 or length(name_var1) is null; 
+ctr := ctr + 1; 
+cols := 1;
+
+END LOOP; 
+OLE2.INVOKE(application,'Quit'); 
+OLE2.RELEASE_OBJ(cell); 
+OLE2.RELEASE_OBJ(worksheet); 
+OLE2.RELEASE_OBJ(worksheets); 
+OLE2.RELEASE_OBJ(workbook); 
+OLE2.RELEASE_OBJ(workbooks); 
+OLE2.RELEASE_OBJ(application); 
+END; 

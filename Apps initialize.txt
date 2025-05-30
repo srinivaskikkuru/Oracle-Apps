@@ -1,0 +1,30 @@
+SELECT resp.responsibility_name,
+          'exec fnd_global.apps_initialize('
+       || fu.user_id
+       || ', '
+       || resp.responsibility_id
+       || ', '
+       || furg.responsibility_application_id
+       || ', '
+       || furg.security_group_id
+       || ');'
+          text_apps_initialize,
+       'exec mo_global.init(' || '''' || fa.application_short_name || ''');'
+          mo_global_init
+  FROM apps.fnd_user_resp_groups furg,
+       fnd_application fa,
+       apps.fnd_user fu,
+       apps.fnd_responsibility_vl resp
+ WHERE     furg.user_id = fu.user_id
+       AND furg.responsibility_id = resp.responsibility_id
+       AND FA.APPLICATION_ID = FURG.RESPONSIBILITY_APPLICATION_ID       
+       AND fu.user_name = 'WIPRO_HR'
+	    order by resp.responsibility_name;
+
+
+fnd_global.APPS_INITIALIZE(user_id=>l_user_id, 
+                           RESP_ID=>L_RESP_ID, 
+                           resp_appl_id=>l_resp_appl_id);
+						   
+						   
+ exec MO_GLOBAL.SET_POLICY_CONTEXT('S',111);
