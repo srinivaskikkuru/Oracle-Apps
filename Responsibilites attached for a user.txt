@@ -1,0 +1,12 @@
+-- The query which displays the user name and his responsibility_name will be
+
+select fu.user_id,
+       fu.user_name,
+       furg.RESPONSIBILITY_APPLICATION_ID,
+       frv.RESPONSIBILITY_NAME
+  from FND_USER fu, FND_USER_RESP_GROUPS furg, FND_RESPONSIBILITY_VL frv
+ where fu.user_id = furg.user_id
+   and furg.responsibility_id = frv.responsibility_id
+   and fu.user_name like 'MATT.HAUSER'
+   and frv.RESPONSIBILITY_NAME like 'Project%Fin%Work%' 
+   order by  frv.RESPONSIBILITY_NAME

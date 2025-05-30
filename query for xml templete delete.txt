@@ -1,0 +1,4 @@
+select * from fnd_concurrent_requests;	
+select * from fnd_application_tl	
+select * from xdo_templates_b order by 4;	
+select * from xdo_templates_b;	

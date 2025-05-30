@@ -1,0 +1,9 @@
+select   a.item_key
+		,b.activity_name
+		,a.activity_status
+		,a.error_name
+		,a.error_message
+		,a.error_stack
+from wf_item_activity_statuses a,wf_process_activities b
+where a.process_activity=b.instance_id
+and a.item_key= 'INTGPLBS-390-231017050629'

@@ -1,0 +1,6 @@
+1) login to your instance with putti or any other software
+2) cd $ADMIN_SCRIPTS_HOME
+3) adapcctl.sh stop
+4) adoacorectl.sh stop
+5) adapcctl.sh start
+6) adoacorectl.sh start

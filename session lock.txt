@@ -1,0 +1,27 @@
+Session DeadLocks
+/*********************************Reference Queries**************************************************************/
+select * from dba_dml_locks
+select sid, serial# from v$session where sid in ( select session_id from dba_dml_locks   );
+ALTER SYSTEM KILL SESSION 'sid,serial'
+
+/*********************************Direct Query for SQL Scripts***************************************************/
+ 
+select 		vs.sid
+			, vs.serial# ,dbl.NAME 
+			, 'ALTER SYSTEM KILL SESSION '''||vs.sid||','||vs.serial#||'''' as query
+from v$session vs,dba_dml_locks dbl 
+where vs.sid=dbl.session_id
+ 
+ 
+/*********************************Alter script to kill session for package***************************************/ 
+SELECT s.sid,
+      l.lock_type,
+      l.mode_held,
+      l.mode_requested,
+      l.lock_id1,
+      'alter system kill session '''|| s.sid|| ','|| s.serial#|| ''' immediate;' kill_sid
+FROM   dba_lock_internal l,
+      v$session s
+WHERE  s.sid = l.session_id
+AND    UPPER(l.lock_id1) LIKE '%INTG_ITEM_ORDERLINE_EXTRACT%'
+AND    l.lock_type = 'Body Definition Lock'

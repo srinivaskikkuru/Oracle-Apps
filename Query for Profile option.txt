@@ -1,0 +1,83 @@
+select
+  p.user_profile_option_name "Profile Name",   
+ v.profile_option_value,
+  decode(v.level_id,
+    10001, 'SITE',
+    10002, (select 'App:'||a.application_short_name from fnd_application a
+            where a.application_id = v.level_value),
+    10003, (select 'Resp:'||f.RESPONSIBILITY_name||' ('||responsibility_key||')' from fnd_responsibility_vl f
+            where f.responsibility_id = v.level_value),
+    10004, (select 'User:'||u.user_name from fnd_user u
+            where u.user_id = v.level_value),
+    10005, (select 'Server:'||n.node_name from fnd_nodes n
+            where n.node_id = v.level_value),
+    10006, (select 'Org:'||org.name from hr_operating_units org
+            where org.name = v.level_value),
+    'NOT SET') "Level Where Option Is Set"
+from
+  fnd_profile_options_vl p,
+  fnd_profile_option_values v 
+where
+  p.profile_option_id = v.profile_option_id (+)
+  and p.application_id = v.application_id (+)
+  and p.profile_option_name like upper('%IBE_SECURE_URL%') 
+order by 1,2,3 desc;
+
+/*******************************************************************************************
+***************  With Responsibilities and Site information  *******************************
+********************************************************************************************/
+select
+  '('||language||')-'||n.user_profile_option_name NAME,
+    decode(v.level_id,
+           10001, 'Site',
+           10002, 'Application',
+           10003, 'Responsibility',
+           10004, 'User',
+           10005, 'Server',
+           10006, 'Organization',
+           10007, 'ServResp',
+                  'Undefined') LEVEL_SET,
+    decode(to_char(v.level_id),
+           '10001', '',
+           '10002', app.application_short_name,
+           '10003', rsp.responsibility_key,
+           '10004', usr.user_name,
+           '10005', svr.node_name,
+           '10006', org.name,
+           '10007', (select n.node_name
+                     from fnd_nodes n
+                     where n.node_id=level_value2)
+                     ||'/'||
+                     (decode(v.level_value,
+                      -1,'Default',
+                      (select responsibility_key
+                       from fnd_responsibility
+                       where responsibility_id=level_value))),
+                  v.level_id) "CONTEXT",
+     v.profile_option_value VALUE
+  from
+    fnd_profile_options p,
+    fnd_profile_option_values v,
+    fnd_profile_options_tl n,
+    fnd_user usr,
+    fnd_application app,
+    fnd_responsibility rsp,
+    fnd_nodes svr,
+    hr_operating_units org
+  where
+    p.profile_option_id = v.profile_option_id (+)
+    and p.profile_option_name = n.profile_option_name
+    and ((upper(v.profile_option_value) like '%HTTP%')
+        or p.profile_option_name in
+             ('IBE_SECURE_URL')
+        or hierarchy_type='SERVER'
+        or hierarchy_type='SERVRESP')
+    and usr.user_id (+) = v.level_value
+    and rsp.application_id (+) = v.level_value_application_id
+    and rsp.responsibility_id (+) = v.level_value
+    and app.application_id (+) = v.level_value
+    and svr.node_id (+) = v.level_value
+    and org.organization_id (+) = v.level_value
+    and language = 'US'
+order by name, v.level_id
+

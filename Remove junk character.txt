@@ -1,0 +1,1 @@
+REGEXP_REPLACE('I AM â€˜USERâ€™ ï»ï»ïƒ¨','[^[a-z,A-Z,0-9,[:space:]]]*','')

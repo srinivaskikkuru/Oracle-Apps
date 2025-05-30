@@ -1,0 +1,11 @@
+Used to create editioning view and synonym for a table R12.2
+
+	exec ad_zd_table.upgrade('APPLSYS', 'XYZ_USER_SERVICE')
+
+Used when table is altered
+
+	exec ad_zd_table.patch('APPLSYS', 'XYZ_USER_SERVICE')
+
+
+
+Developing and Deploying Customizations in Oracle E-Business Suite Release 12.2 (Doc ID 1577661.1)

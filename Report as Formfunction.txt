@@ -1,0 +1,31 @@
+Report as Form function
+
+
+
+Form : PO_DETAILS_EXTRACTION
+Application : Purchasing
+Description : PO Data Extraction by Supplier Details
+
+Form Function : PO_DETAILS_EXTRACTION
+Application : Purchasing
+
+User Form Function : PO Data Extraction by Supplier Details
+Parameters : USE_ORG="N" CONCURRENT_PROGRAM_NAME="PO_DETAILS_EXTRACTION"       PROGRAM_APPL_SHORT_NAME="PO"
+
+
+Parameters: 
+USE_ORG="N" CONCURRENT_PROGRAM_NAME="AG_XTR_BNK_TRANSF_LFR" PROGRAM_APPL_SHORT_NAME="XTR" 
+
+USER_ORG : Determines whether the organization ID must be set up before the request is run.
+If this is set to “ Y ” then following four ORG parameters will be used. 
+		ORG_ID  Specifies a particular organization  ID. 
+		ORG_NAME Specifies a particular organization name. 
+		ORG_CODE specifies a particular organization code. 
+		CHART_OF_ACCOUNTS_ID Specifies a particular chart of accounts ID 
+CONCURRENT_PROGRAM_NAME  : Concurrent program short name 
+PROGRAM_APPL_SHORT_NAME : Program registered application name
+
+
+Read More at our Website: http://www.askhareesh.com/2015/09/run-concurrent-program-without-using-srs-window.html
+
+USE_ORG="N" CONCURRENT_PROGRAM_NAME="INTG_TOBSHPD" PROGRAM_APPL_SHORT_NAME="XBOL"

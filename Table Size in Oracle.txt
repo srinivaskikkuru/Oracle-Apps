@@ -1,0 +1,13 @@
+SELECT owner,
+segment_name,
+segment_type,
+tablespace_name,
+bytes/1048576 MB,
+initial_extent,
+next_extent,
+extents,
+pct_increase
+FROM
+DBA_SEGMENTS
+where 
+SEGMENT_NAME like  'INTG%PA%PFW%N9'   --INTG%PA%PFW%    188.125
